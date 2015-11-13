@@ -1,0 +1,44 @@
+.item {
+    position:absolute;
+    
+}
+
+.item:hover {
+    background-color: rgba(255, 216, 0, 0.51);
+    border: 1px solid green;
+}
+
+.item img {
+    width:100%;
+    height:100%;
+}
+
+.body img {
+    width:100%;
+    height:100%;
+}
+
+.face img {
+   
+}
+
+.hair {
+   position:absolute;
+}
+
+.face_img {
+    position:absolute;
+     width:100%;
+    height:100%;
+}
+
+.wrapper {
+   position:absolute;
+   width:100%;
+   height:100%;
+}
+
+.btn_pane {
+    height:40px;
+     position:absolute;
+}

@@ -1,0 +1,270 @@
+﻿<!doctype html>
+<!--[if lt IE 7]>      <html class="lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html> <!--<![endif]-->
+<head>
+  <title>Phaser game</title>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.11.3.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="jquery.ui.rotatable.js"></script>
+<link rel="stylesheet" href="jquery.ui.rotatable.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="margin:0px; padding: 0px;">
+    <button class="eye_angle_p">釣り目</button>
+    <button class="eye_angle_m">タレ目</button>
+    <button class="eyebow_angle_p">釣り眉</button>
+    <button class="eyebow_angle_m">タレ眉</button>
+    <button class="eye_height_p">目開く</button>
+    <button class="eye_height_m">目細める</button>
+    
+    <!--
+    <button class="face_left">顔左</button>
+    <button class="face_right">顔右</button>
+    -->
+
+    <button class="face_angle_left">首傾げる左</button>
+    <button class="face_angle_right">首傾げる右</button>
+  
+    <div class="wrapper face_wrapper " style="left: 150px; top: 200px;"><div class="face" style="width: 254px; height: 329px; transform: rotate(0rad); background: white;">
+    <div class="wrapper " style="left: -17px; top: -32px;"><div class="body item hair back_hair " style="width: 277px; height: 361px; transform: rotate(-0.0221311rad);"><img src="./image/back_hair_2.png" style="display: block;"> </div></div>
+    <div class="wrapper " style="left: 42px; top: 285px;"><div class="body item neck " style="width: 180px; height: 91px;"><img class="hair" src="./image/neck_2.png" style="display: block;"> </div></div>
+    <img class="face_img" src="./image/face_2.png">
+    <div class="wrapper " style="left: 18.2688px; top: 102.47px; "><div class="item l_eyebow eyebow " style="width: 87.6905px; height: 34.8939px;"><img src="./image/l_eyebow_2.png"> </div></div>
+    <div class="wrapper " style="left: 146.356px; top: 108.109px;"><div class="item r_eyebow eyebow " style="width: 75.5952px; height: 25.9212px;"><img src="./image/r_eyebow_2.png"></div></div>
+    <div class="wrapper " style="left: 30.3956px; top: 145.604px; "><div class="item l_eye eye " style="width: 69.5476px; height: 42px;"><img src="./image/l_eye_2.png"></div></div>
+    <div class="wrapper " style="left: 153.438px; top: 141.906px; "><div class="item r_eye eye " style="width: 75px; height: 39px;"><img src="./image/r_eye_2.png"></div></div>
+    <div class="wrapper " style="left: 112.243px; top: 193.256px; "><div class="item nose " style="width: 27.2143px; height: 46.8576px;"><img src="./image/nose_2.png"></div></div>  
+    <div class="wrapper " style="left: 89.3438px; top: 261.078px; "><div class="item mouse " style="height: 30.9061px; width: 73.5794px;"><img src="./image/mouse_2.png"></div></div>
+    <div class="wrapper " style="left: -14px; top: -24px; "><div class="body item hair front_hair " style="width: 261px; height: 175px;"><img src="./image/front_hair_2.png" style="display: block;"></div></div>
+    <div class="btn_pane">
+        <button class="edit_face_btn btn" >顔編集</button>
+        <button class="end_face_btn btn" >顔編集完了</button>
+        <button class="edit_hair_btn btn" >髪編集</button>
+        <button class="end_hair_btn btn" >髪編集完了</button>
+     </div>
+  </div> </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".wrapper").draggable({ disabled: true });
+            $(".wrapper").each(function () {
+                //console.log($(this).children(".item"), $(this).children(".item").children("img"));
+                $(this).width($(this).children(".item").children("img").width());
+                $(this).height($(this).children(".item").children("img").height());
+            });
+           
+
+            $(".face").rotatable().resizable({
+                start: function( event, ui ){
+                    this.prevSize = ui.originalSize;
+                    $(".item",this).each(function () {
+                        this.originalSize = { width: $(this).width(), height: $(this).height() };
+                        this.originalPosition = $(this).parent().position();//wrapperの位置
+                        console.log(this.originalPosition);
+                    });
+                },
+                resize: function (event, ui) {
+                    
+                    var r_x = ui.size.width / ui.originalSize.width;
+                    var r_y = ui.size.height / ui.originalSize.height;
+                   console.log(r_x, r_y, ui.size, this.prevSize);
+                   $(".item",this).each(function () {
+                       $(this).width(this.originalSize.width * r_x);
+                       $(this).height(this.originalSize.height * r_y);
+                       $(this).parent().css({ top: this.originalPosition.top * r_y + "px", left: this.originalPosition.left * r_x + "px" });
+                       //console.log({ top: this.originalPosition.top * r_y + "px", left: this.originalPosition.left * r_x + "px" });
+                   });
+                }
+                
+            });
+
+            $(".item").rotatable().resizable({
+                disabled: true,
+                resize: function (event, ui) {
+                    $(this).parent().width(ui.size.width);
+                    $(this).parent().height(ui.size.height);             
+                }
+            });
+           
+
+            $(".ui-resizable-handle").hide();
+            $(".ui-rotatable-handle").hide();
+            $(".btn").hide();
+            $(".face_wrapper").draggable("enable");
+            
+
+            MANGAO = {};
+
+            MANGAO.editFace = false;
+            MANGAO.editHair = false;
+
+            $(".item").mouseover(function () {
+                if (MANGAO.editFace) {
+                    $(this).children(".ui-resizable-handle").show();
+                    $(this).children(".ui-rotatable-handle").show();
+                }
+            });
+
+            $(".body").mouseover(function () {
+                if (MANGAO.editHair) {
+                    $(this).children(".ui-resizable-handle").show();
+                    $(this).children(".ui-rotatable-handle").show();
+                }
+            });
+
+            $(".item").mouseout(function () {
+
+                $(this).children(".ui-resizable-handle").hide();
+                $(this).children(".ui-rotatable-handle").hide();
+            });
+
+
+            $(".face").mouseover(function () {
+                if (MANGAO.editFace) {
+                    $(this).children(".ui-resizable-handle").show();
+                    $(".btn_pane", this).children(".end_face_btn").show()
+
+
+                } else if (MANGAO.editHair) {
+                    $(this).children(".ui-resizable-handle").show();
+                    $(".btn_pane", this).children(".end_hair_btn").show()
+                } else {
+                    $(this).children(".ui-rotatable-handle").show();
+                    $(".btn_pane", this).children(".edit_face_btn").show()
+                    $(".btn_pane", this).children(".edit_hair_btn").show()
+                }
+            });
+            $(".face").mouseout(function () {
+                $(this).children(".ui-resizable-handle").hide();
+                $(this).children(".ui-rotatable-handle").hide();
+                $(".btn_pane", this).children(".btn").hide()
+            });
+
+            $(".edit_face_btn").click(function () {
+                var face = $(this).parent().parent();
+                $(".item", face).parent().draggable("enable");
+                $(".item", face).resizable("enable");
+                $(face.parent()).draggable("disable");
+                $(".hair", face).parent().hide();
+                MANGAO.rotation = face.rotate();
+                face.rotate(0);
+                MANGAO.editFace = true;
+            });
+
+            $(".end_face_btn").click(function () {
+                var face = $(this).parent().parent();
+                $(".item", face).parent().draggable("disable");
+                $(".item", face).resizable("disable");
+                $(face.parent()).draggable("enable");
+                $(".hair", face).parent().show();
+                face.rotate(MANGAO.rotation);
+                console.log(MANGAO.rotation, face.rotate());
+                MANGAO.editFace = false;
+            });
+
+            $(".edit_hair_btn").click(function () {
+                var face = $(this).parent().parent();
+                $(".body", face).parent().draggable("enable");
+                $(".body", face).resizable("enable");
+                $(face.parent()).draggable("disable");
+                
+                MANGAO.rotation = face.rotate();
+                face.rotate(0);
+                MANGAO.editHair = true;
+            });
+
+            $(".end_hair_btn").click(function () {
+                var face = $(this).parent().parent();
+                $(".body", face).parent().draggable("disable");
+                $(".body", face).resizable("disable");
+                $(face.parent()).draggable("enable");
+                
+                face.rotate(MANGAO.rotation);
+                
+                MANGAO.editHair = false;
+            });
+
+
+            $(".eye_angle_p").click(function () {
+                $(".r_eye").rotate($(".r_eye").rotate() - 2);
+                $(".l_eye").rotate($(".l_eye").rotate() + 2);
+            });
+
+            $(".eye_angle_m").click(function () {
+                $(".r_eye").rotate($(".r_eye").rotate() + 2);
+                $(".l_eye").rotate($(".l_eye").rotate() - 2);
+            });
+
+
+            $(".eyebow_angle_p").click(function () {
+                $(".r_eyebow").rotate($(".r_eyebow").rotate() - 2);
+                $(".l_eyebow").rotate($(".l_eyebow").rotate() + 2);
+            });
+
+            $(".eyebow_angle_m").click(function () {
+                $(".r_eyebow").rotate($(".r_eyebow").rotate() + 2);
+                $(".l_eyebow").rotate($(".l_eyebow").rotate() - 2);
+            });
+
+            $(".eye_height_p").click(function () {
+                var r = $(".face").rotate();
+                $(".face").rotate(0);
+                var r_h = $(".r_eye").height();
+                var l_h = $(".l_eye").height();
+                $(".r_eye").height( r_h * 1.1);
+                $(".l_eye").height( l_h * 1.1);
+
+                console.log($(".l_eye").parent().position().top, l_h * 0.05);
+                $(".l_eye").parent().height($(".l_eye").height()).css({ top: $(".l_eye").parent().position().top - l_h * 0.05 + "px" });
+                $(".r_eye").parent().height($(".r_eye").height()).css({top: $(".r_eye").parent().position().top- r_h*0.05 +"px"});
+                $(".face").rotate( r );
+            });
+
+            $(".eye_height_m").click(function () {
+                var r = $(".face").rotate();
+                $(".face").rotate(0);
+                var r_h = $(".r_eye").height();
+                var l_h = $(".l_eye").height();
+                $(".r_eye").height($(".r_eye").height() / 1.1);
+                $(".l_eye").height($(".l_eye").height() / 1.1);
+
+                $(".r_eye").parent().height($(".r_eye").height()).css({ top: $(".r_eye").parent().position().top + r_h * 0.05 + "px" });
+                $(".l_eye").parent().height($(".l_eye").height()).css({ top: $(".l_eye").parent().position().top + l_h * 0.05 + "px" });
+                $(".face").rotate(r);
+            });
+
+            $(".face_angle_left").click(function () {
+                $(".neck").rotate($(".neck").rotate() + 5, { rotationCenterX: 50, rotationCenterY: -20 });
+                $(".face").rotate(-$(".neck").rotate());
+                $(".back_hair").rotate($(".neck").rotate() * 0.5, { rotationCenterX: 50, rotationCenterY: $(".back_hair").width() * 0.5*100 / $(".back_hair").height() });
+            });
+
+            $(".face_angle_right").click(function () {
+                $(".neck").rotate($(".neck").rotate() - 5, { rotationCenterX: 50, rotationCenterY: -20 });
+                $(".face").rotate(-$(".neck").rotate());
+                $(".back_hair").rotate($(".neck").rotate() * 0.5, { rotationCenterX: 50, rotationCenterY: $(".back_hair").width() * 0.5*100 / $(".back_hair").height() });
+            });
+
+            $(".face_left").click(function () {
+                $(".eye").parent().animate({ left: "-=3%" }, "slow");
+                $(".nose").parent().animate({ left: "-=10%" }, "slow");
+                $(".eyebow").parent().animate({ left: "-=6%" }, "slow");
+                $(".neck").parent().animate({ left: "+=10%", top: "-=5%" }, "slow");
+                $(".back_hair").parent().animate({ left: "+=3%", width: "+=10%" }, "slow");
+            });
+
+            $(".face_right").click(function () {
+                $(".eye").parent().animate({ left: "+=3%" }, "slow");
+                $(".nose").parent().animate({ left: "+=10%" }, "slow");
+                $(".eyebow").parent().animate({ left: "+=6%" }, "slow");
+                $(".neck").parent().animate({ left: "-=10%", top: "-=5%" }, "slow");
+                $(".back_hair").parent().animate({ left: "-=0%", width: "+=10%" }, "slow");
+            });
+        });
+	</script>
+</body>
+</html>
